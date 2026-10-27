@@ -431,7 +431,7 @@
         </svg>
         <div class="word">Salesdose</div>
         <div class="div"></div>
-        <div class="product">Control horario · <strong id="product-label">borrador</strong></div>
+        <div class="product">Control horario · <strong id="product-label">Holded</strong></div>
       </div>
       <div class="seg" id="snap-switch" role="group" aria-label="Hora de la lectura"></div>
     </header>
@@ -445,7 +445,7 @@
     <section id="panel-fichajes">
       <div class="hero">
         <p class="eyebrow" id="eyebrow-fichajes">Salesdose · Control horario · Martes 27 oct 2026 · hora de Madrid</p>
-        <h1 id="hero-fichajes"></h1>
+        <h1 id="hero-fichajes">Leyendo Holded…</h1>
         <div class="kpis" id="kpis"></div>
       </div>
       <div class="banner" id="banner"></div>
@@ -575,106 +575,22 @@
       </article>
     </section>
 
-    <footer class="note" id="footer-note">Borrador visual con nombres y horas inventados. No uses estas cifras como el fichaje real del equipo. La versión conectada leerá Holded a las 9:15 y a las 18:15, hora de Madrid.</footer>
+    <footer class="note" id="footer-note">La lectura sale de Holded. La clave de la API se queda en el servidor.</footer>
   </div>
 
   <script>
     const MONTHS = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
-    /* DATA:START */
-    const TODAY = "2026-10-27";
-    const meta = {
-      product: "borrador",
-      eyebrow: "Salesdose · Control horario · Martes 27 oct 2026 · hora de Madrid",
-      eyebrowHist: "Histórico · 29 sep – 26 oct 2026 · días laborables",
-      caption: "Solo personal en alta. Quien ya está de baja en Holded no aparece. Fuente de este borrador: datos de ejemplo, no los fichajes reales.",
-      footer: "Borrador visual con nombres y horas inventados. No uses estas cifras como el fichaje real del equipo. La versión conectada leerá Holded a las 9:15 y a las 18:15, hora de Madrid.",
-      histCaption: "Eje: número de no fichajes en días laborables. Fuente: datos de ejemplo.",
-      historyFrom: "2026-09-29",
-      historyTo: "2026-10-26",
-      historyEndLabel: "26 oct"
-    };
-    const readings = [
-      { id: "09:15", button: "Lectura 9:15", hora: "9:15" },
-      { id: "18:15", button: "Lectura 18:15", hora: "18:15" }
-    ];
+    let TODAY = "";
+    let meta = {};
+    let readings = [];
+    let people = [];
+    let absences = [];
+    let history = {};
+    let snaps = {};
+    let weeks = [];
+    let state = { tab: "fichajes", snap: "09:15", filter: "todos", selected: "" };
 
-    const people = [
-      { id: "lucia", name: "Lucía Navarro", team: "Ventas" },
-      { id: "marcos", name: "Marcos Vidal", team: "Ventas" },
-      { id: "elena", name: "Elena Ruiz", team: "Ventas" },
-      { id: "pablo", name: "Pablo Herrera", team: "Ventas" },
-      { id: "carla", name: "Carla Méndez", team: "Ventas" },
-      { id: "ivan", name: "Iván Romero", team: "Ventas" },
-      { id: "raquel", name: "Raquel Soto", team: "Ventas" },
-      { id: "sofia", name: "Sofía Martín", team: "Operaciones" },
-      { id: "andres", name: "Andrés Costa", team: "Operaciones" },
-      { id: "tomas", name: "Tomás Ibáñez", team: "Operaciones" },
-      { id: "hugo", name: "Hugo Peña", team: "Operaciones" },
-      { id: "diego", name: "Diego Lara", team: "Operaciones" },
-      { id: "nuria", name: "Nuria Blanco", team: "Administración" },
-      { id: "oscar", name: "Óscar Prieto", team: "Administración" },
-      { id: "marta", name: "Marta Gil", team: "Administración" }
-    ];
-
-    const absences = [
-      { person: "raquel", type: "Vacaciones", from: "2026-10-20", to: "2026-10-31", status: "Aprobada" },
-      { person: "diego", type: "Baja médica", from: "2026-10-27", to: "2026-10-27", status: "Aprobada" },
-      { person: "marta", type: "Formación", from: "2026-10-27", to: "2026-10-28", status: "Aprobada" },
-      { person: "elena", type: "Vacaciones", from: "2026-11-03", to: "2026-11-07", status: "Aprobada" },
-      { person: "pablo", type: "Asuntos propios", from: "2026-11-14", to: "2026-11-14", status: "Aprobada" },
-      { person: "sofia", type: "Permiso", from: "2026-10-02", to: "2026-10-02", status: "Aprobada" }
-    ];
-
-    const history = {
-      hugo: { n: 6, last: "2026-10-26" },
-      carla: { n: 4, last: "2026-10-23" },
-      ivan: { n: 3, last: "2026-10-21" },
-      tomas: { n: 2, last: "2026-10-16" },
-      andres: { n: 1, last: "2026-10-09" }
-    };
-
-    const snaps = {
-      "09:15": {
-        lucia: { inn: "08:02", out: null },
-        marcos: { inn: "08:11", out: null },
-        elena: { inn: "08:04", out: null },
-        pablo: { inn: "07:58", out: null },
-        sofia: { inn: "08:27", out: null },
-        andres: { inn: "09:06", out: null },
-        nuria: { inn: "08:15", out: null },
-        oscar: { inn: "08:41", out: null }
-      },
-      "18:15": {
-        lucia: { inn: "08:02", out: null },
-        marcos: { inn: "08:11", out: null },
-        elena: { inn: "08:04", out: "17:55" },
-        pablo: { inn: "07:58", out: "18:01" },
-        sofia: { inn: "08:27", out: "17:48" },
-        andres: { inn: "09:06", out: "18:05" },
-        tomas: { inn: "09:40", out: null },
-        nuria: { inn: "08:15", out: "14:02" },
-        oscar: { inn: "08:41", out: "17:36" }
-      }
-    };
-
-    const weeks = [
-      { label: "29 sep", value: 5 },
-      { label: "6 oct", value: 4 },
-      { label: "13 oct", value: 4 },
-      { label: "20 oct", value: 3 }
-    ];
-    /* DATA:END */
-
-    const params = new URLSearchParams(location.search);
-    const snapIds = readings.map((r) => r.id);
-    const state = {
-      tab: ["fichajes", "ausencias", "historico"].includes(params.get("vista")) ? params.get("vista") : "fichajes",
-      snap: snapIds.includes(params.get("hora")) ? params.get("hora") : snapIds[0],
-      filter: ["todos", "fichados", "falta", "cubierta"].includes(params.get("filtro")) ? params.get("filtro") : "todos",
-      selected: people.some((p) => p.id === params.get("persona")) ? params.get("persona") : ""
-    };
-
-    function reading() { return readings.find((r) => r.id === state.snap) || readings[0]; }
+    function reading() { return readings.find((r) => r.id === state.snap) || readings[0] || { id: "09:15", hora: "9:15", button: "Lectura 9:15" }; }
     function joinNames(list) {
       const names = list.map((p) => p.name);
       if (names.length <= 1) return names[0] || "";
@@ -869,8 +785,12 @@
 
     function renderDetail() {
       const p = person(state.selected);
-      const c = classify(p.id);
       const box = document.getElementById("detail");
+      if (!p) {
+        box.replaceChildren();
+        return;
+      }
+      const c = classify(p.id);
       box.replaceChildren();
       box.append(el("div", "kicker", "Lectura de las " + reading().hora));
       box.append(el("h3", null, p.name));
@@ -1071,13 +991,6 @@
     }
 
     const snapSwitch = document.getElementById("snap-switch");
-    readings.forEach((item) => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.dataset.snap = item.id;
-      btn.textContent = item.button;
-      snapSwitch.append(btn);
-    });
     snapSwitch.addEventListener("click", (event) => {
       const btn = event.target.closest("[data-snap]");
       if (!btn) return;
@@ -1098,7 +1011,49 @@
       });
     });
 
-    render();
+    function mountReadings() {
+      snapSwitch.replaceChildren();
+      readings.forEach((item) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.dataset.snap = item.id;
+        btn.textContent = item.button;
+        snapSwitch.append(btn);
+      });
+    }
+
+    async function boot() {
+      const hero = document.getElementById("hero-fichajes");
+      hero.textContent = "Leyendo Holded…";
+      try {
+        const response = await fetch("/api/board", { cache: "no-store" });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Holded no responde");
+        TODAY = data.today;
+        meta = data.meta;
+        readings = data.readings;
+        people = data.people;
+        absences = data.absences;
+        history = data.history;
+        snaps = data.snaps;
+        weeks = data.weeks;
+      } catch (error) {
+        hero.textContent = "No se ha podido leer Holded. " + error.message;
+        return;
+      }
+      const params = new URLSearchParams(location.search);
+      const snapIds = readings.map((item) => item.id);
+      state = {
+        tab: ["fichajes", "ausencias", "historico"].includes(params.get("vista")) ? params.get("vista") : "fichajes",
+        snap: snapIds.includes(params.get("hora")) ? params.get("hora") : snapIds[0],
+        filter: ["todos", "fichados", "falta", "cubierta"].includes(params.get("filtro")) ? params.get("filtro") : "todos",
+        selected: people.some((person) => person.id === params.get("persona")) ? params.get("persona") : ""
+      };
+      mountReadings();
+      render();
+    }
+
+    boot();
   </script>
 </body>
 </html>
