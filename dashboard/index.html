@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Control horario · Salesdose</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #07060f;
+      --card: #120f22;
+      --card-2: #18142b;
+      --line: rgba(176, 156, 230, 0.16);
+      --text: #f7f4ff;
+      --muted: #c8bedd;
+      --faint: #9d93b6;
+      --purple: #8b6cff;
+      --amber: #f0c27a;
+      --amber-bg: #2a2216;
+      --hero-a: #6843f2;
+      --hero-b: #8a4df0;
+      --hero-c: #b15cf6;
+      --shadow-line: rgba(255, 255, 255, 0.08);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, "Segoe UI", sans-serif;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    button, input { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, .tab:focus-visible {
+      outline: 2px solid #d4c6ff;
+      outline-offset: 2px;
+    }
+
+    .wrap {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+      padding-bottom: 64px;
+    }
+
+    header.top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 22px 0 8px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .brand svg { flex: none; }
+    .word {
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.03em;
+    }
+    .brand .div {
+      width: 1px;
+      height: 18px;
+      background: rgba(255,255,255,0.18);
+    }
+    .product {
+      color: var(--muted);
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .product strong { color: var(--text); font-weight: 600; }
+
+    .seg {
+      display: flex;
+      padding: 4px;
+      border-radius: 999px;
+      background: #161226;
+      border: 1px solid var(--line);
+      flex: none;
+    }
+    .seg button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .seg button[aria-pressed="true"] {
+      background: #7c5cff;
+      color: white;
+    }
+
+    nav.tabs {
+      display: flex;
+      gap: 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-top: 8px;
+    }
+    .tab {
+      appearance: none;
+      background: none;
+      border: 0;
+      color: var(--faint);
+      padding: 12px 0 10px;
+      font-weight: 600;
+      position: relative;
+    }
+    .tab[aria-selected="true"] { color: var(--text); }
+    .tab[aria-selected="true"]::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 0; bottom: -1px;
+      height: 2px;
+      background: #c4b5fd;
+      border-radius: 2px;
+    }
+
+    .hero {
+      margin-top: 22px;
+      background: linear-gradient(105deg, var(--hero-a) 0%, var(--hero-b) 48%, var(--hero-c) 100%);
+      border-radius: 28px;
+      padding: 26px 26px 22px;
+    }
+    .eyebrow {
+      margin: 0 0 8px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.78);
+    }
+    .hero h1 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.35;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      max-width: 860px;
+    }
+    .hero h1 b { font-weight: 750; }
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .kpi {
+      background: rgba(62, 28, 150, 0.38);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 14px 16px 13px;
+      min-height: 108px;
+    }
+    .kpi .label {
+      color: rgba(255,255,255,0.82);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .kpi .num {
+      margin-top: 6px;
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+    }
+    .kpi .hint {
+      margin-top: 6px;
+      color: rgba(255,255,255,0.72);
+      font-size: 12px;
+    }
+
+    .banner {
+      margin-top: 14px;
+      background: var(--amber-bg);
+      color: #f6e2bc;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 13.5px;
+    }
+    .banner strong { color: #ffe7c2; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px 18px 16px;
+    }
+    .card h2 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+    .card h2::after {
+      content: "";
+      display: block;
+      width: 34px;
+      height: 3px;
+      margin-top: 8px;
+      border-radius: 99px;
+      background: var(--purple);
+    }
+    .sub {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .caption {
+      margin: 12px 0 0;
+      color: var(--faint);
+      font-size: 12px;
+    }
+
+    .mini-list { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+    .mini-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      background: var(--card-2);
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+    .mini-list .who { font-weight: 600; }
+    .mini-list .meta { color: var(--faint); font-size: 12px; margin-top: 2px; }
+    .count {
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.03em;
+    }
+    .count span { display: block; font-size: 11px; font-weight: 600; color: var(--faint); letter-spacing: 0; text-align: right; }
+
+    .board { margin-top: 14px; }
+    .board-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; }
+    .filters button {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-weight: 600;
+      font-size: 12.5px;
+    }
+    .filters button[aria-pressed="true"] {
+      background: #2a2148;
+      color: white;
+      border-color: rgba(180, 160, 255, 0.4);
+    }
+
+    .split-table {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 14px;
+      margin-top: 14px;
+      align-items: start;
+    }
+    .table-scroll { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 640px;
+    }
+    th {
+      text-align: left;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--faint);
+      font-weight: 650;
+      padding: 0 12px 8px;
+    }
+    td {
+      padding: 11px 12px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      vertical-align: middle;
+    }
+    tbody tr { cursor: pointer; }
+    tbody tr:hover { background: rgba(255,255,255,0.025); }
+    tbody tr[aria-selected="true"] { background: rgba(140, 110, 255, 0.1); }
+    tr.falta td:first-child { box-shadow: inset 3px 0 0 #e2b15a; }
+    tr.cubierta td:first-child { box-shadow: inset 3px 0 0 #b9a4ff; }
+    .name { font-weight: 650; }
+    .team { color: var(--faint); font-size: 12px; margin-top: 2px; }
+    .time {
+      font-variant-numeric: tabular-nums;
+      font-weight: 650;
+      font-size: 15px;
+    }
+    .time.none { color: var(--faint); font-weight: 500; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+    .pill.falta { background: rgba(226, 177, 90, 0.16); color: #f3d7a6; }
+    .pill.cubierta { background: rgba(180, 155, 255, 0.16); color: #ddd2ff; }
+    .pill.abierta { background: rgba(255,255,255,0.08); color: #fff; }
+    .pill.cerrada { background: rgba(140, 110, 255, 0.22); color: #efeaff; }
+    .cruce { color: var(--muted); font-size: 13px; }
+
+    .detail {
+      background: var(--card-2);
+      border-radius: 16px;
+      padding: 14px;
+      position: sticky;
+      top: 12px;
+    }
+    .detail .kicker {
+      color: var(--faint);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .detail h3 { margin: 6px 0 0; font-size: 18px; letter-spacing: -0.02em; }
+    .detail p { margin: 10px 0 0; color: var(--muted); font-size: 13px; }
+    .detail .verdict {
+      margin-top: 12px;
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: #221c36;
+      color: var(--text);
+      font-size: 13px;
+    }
+    dl.facts { margin: 12px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    dl.facts div { background: #120f22; border-radius: 12px; padding: 8px 10px; }
+    dl.facts dt { color: var(--faint); font-size: 11px; }
+    dl.facts dd { margin: 3px 0 0; font-weight: 650; font-variant-numeric: tabular-nums; }
+
+    .bars { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .bar-row { display: grid; grid-template-columns: 132px 1fr 28px; gap: 10px; align-items: center; }
+    .bar-row .nm { font-weight: 600; font-size: 13px; }
+    .track { height: 10px; border-radius: 99px; background: #241e38; overflow: hidden; }
+    .fill { height: 100%; border-radius: 99px; background: #b9a0ff; }
+    .bar-row .n { font-variant-numeric: tabular-nums; font-weight: 700; text-align: right; }
+
+    .weeks {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      align-items: end;
+      height: 150px;
+    }
+    .week { display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; gap: 6px; }
+    .week .col {
+      width: 100%;
+      max-width: 48px;
+      border-radius: 10px 10px 4px 4px;
+      background: linear-gradient(#c4b0ff, #7d5cff);
+      min-height: 8px;
+    }
+    .week span { color: var(--faint); font-size: 11px; font-weight: 600; }
+    .axis {
+      display: flex;
+      justify-content: space-between;
+      color: var(--faint);
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    .status-ok { color: #ddd2ff; }
+    footer.note {
+      margin-top: 18px;
+      color: var(--faint);
+      font-size: 12px;
+    }
+
+    @media (max-width: 980px) {
+      .kpis, .grid-2, .split-table { grid-template-columns: 1fr; }
+      .detail { position: static; }
+      header.top { align-items: flex-start; flex-direction: column; }
+    }
+    @media (max-width: 640px) {
+      .kpis { grid-template-columns: 1fr 1fr; }
+      .wrap { width: min(1120px, calc(100% - 24px)); }
+      .kpi .num { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="brand">
+        <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true">
+          <defs>
+            <linearGradient id="petalA" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#f4efff"/>
+              <stop offset="100%" stop-color="#a78bfa"/>
+            </linearGradient>
+            <linearGradient id="petalB" x1="1" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#c4b5fd"/>
+              <stop offset="100%" stop-color="#6d4dff"/>
+            </linearGradient>
+          </defs>
+          <path fill="url(#petalA)" d="M16 2c5.2 6.2 9 10 9 14.2C25 20.6 21.4 24 16.8 24c-2.6 0-4.4-1.3-5.6-3.2C10 22.6 8.2 24 6.2 24 3 24 1 21.6 1 18.6 1 15.2 4.2 11 8.6 6.4 10.6 4 13.2 2 16 2z"/>
+          <path fill="url(#petalB)" d="M16 30c-5.2-6.2-9-10-9-14.2C7 11.4 10.6 8 15.2 8c2.6 0 4.4 1.3 5.6 3.2C22 9.4 23.8 8 25.8 8 29 8 31 10.4 31 13.4c0 3.4-3.2 7.6-7.6 12.2C21.4 28 18.8 30 16 30z"/>
+        </svg>
+        <div class="word">Salesdose</div>
+        <div class="div"></div>
+        <div class="product">Control horario · <strong>borrador</strong></div>
+      </div>
+      <div class="seg" role="group" aria-label="Hora de la lectura">
+        <button type="button" data-snap="09:15" aria-pressed="true">Lectura 9:15</button>
+        <button type="button" data-snap="18:15" aria-pressed="false">Lectura 18:15</button>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="Vistas del tablero">
+      <button class="tab" type="button" data-tab="fichajes" aria-selected="true">Fichajes</button>
+      <button class="tab" type="button" data-tab="ausencias" aria-selected="false">Ausencias</button>
+      <button class="tab" type="button" data-tab="historico" aria-selected="false">Histórico</button>
+    </nav>
+
+    <section id="panel-fichajes">
+      <div class="hero">
+        <p class="eyebrow">Salesdose · Control horario · Martes 27 oct 2026 · hora de Madrid</p>
+        <h1 id="hero-fichajes"></h1>
+        <div class="kpis" id="kpis"></div>
+      </div>
+      <div class="banner" id="banner"></div>
+      <div class="grid-2">
+        <article class="card">
+          <h2>No han fichado</h2>
+          <p class="sub">Sin entrada en esta lectura y sin vacaciones, baja ni permiso que lo cubra.</p>
+          <ul class="mini-list" id="miss-list"></ul>
+        </article>
+        <article class="card">
+          <h2>Los cubre el calendario</h2>
+          <p class="sub">No se espera fichaje. Esta ausencia no cuenta como falta.</p>
+          <ul class="mini-list" id="cover-list"></ul>
+        </article>
+      </div>
+      <article class="card board">
+        <div class="board-head">
+          <div>
+            <h2>Todos los empleados en alta</h2>
+            <p class="sub">Entrada, salida y cruce con el calendario. Si no hay fichaje, la última columna dice si es una ausencia programada o una falta.</p>
+          </div>
+          <div class="filters" role="group" aria-label="Filtrar empleados">
+            <button type="button" data-filter="todos" aria-pressed="true">Todos</button>
+            <button type="button" data-filter="fichados" aria-pressed="false">Han fichado</button>
+            <button type="button" data-filter="falta" aria-pressed="false">Sin fichar</button>
+            <button type="button" data-filter="cubierta" aria-pressed="false">Con ausencia</button>
+          </div>
+        </div>
+        <div class="split-table">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Empleado</th>
+                  <th>Entrada</th>
+                  <th>Salida</th>
+                  <th>Estado</th>
+                  <th>Calendario</th>
+                </tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+          <aside class="detail" id="detail" aria-live="polite"></aside>
+        </div>
+        <p class="caption">Solo personal en alta. Quien ya está de baja en Holded no aparece. Fuente de este borrador: datos de ejemplo, no los fichajes reales.</p>
+      </article>
+    </section>
+
+    <section id="panel-ausencias" hidden>
+      <div class="hero">
+        <p class="eyebrow">Calendario que consulta el tablero de fichajes</p>
+        <h1>Antes de marcar una falta, el tablero mira las vacaciones, bajas y permisos aprobados de ese día.</h1>
+        <div class="kpis" id="kpis-aus"></div>
+      </div>
+      <div class="grid-2">
+        <article class="card">
+          <h2>Hoy, 27 oct</h2>
+          <p class="sub">Estas ausencias explican un hueco en el fichaje de la lectura de las 9:15 y de las 18:15.</p>
+          <ul class="mini-list" id="today-abs"></ul>
+        </article>
+        <article class="card">
+          <h2>Otros días del calendario</h2>
+          <p class="sub">Programadas o ya pasadas. No cambian el tablero de hoy.</p>
+          <ul class="mini-list" id="other-abs"></ul>
+        </article>
+      </div>
+      <article class="card board">
+        <h2>Vacaciones y ausencias por empleado</h2>
+        <p class="sub">El tablero de fichajes usa esta lista. Si el día de la lectura cae dentro del periodo, no cuenta como no fichaje.</p>
+        <div class="table-scroll" style="margin-top:14px">
+          <table>
+            <thead>
+              <tr>
+                <th>Empleado</th>
+                <th>Tipo</th>
+                <th>Periodo</th>
+                <th>Estado</th>
+                <th>Efecto hoy</th>
+              </tr>
+            </thead>
+            <tbody id="abs-rows"></tbody>
+          </table>
+        </div>
+        <p class="caption">Borrador con ausencias de ejemplo. En la versión conectada saldrán de Holded (time off) junto con los empleados en alta.</p>
+      </article>
+    </section>
+
+    <section id="panel-historico" hidden>
+      <div class="hero">
+        <p class="eyebrow">Histórico · 29 sep – 26 oct 2026 · días laborables</p>
+        <h1>16 no fichajes en 30 días, en 5 personas. El día de hoy todavía no entra en la cuenta: se cierra con la lectura de las 18:15.</h1>
+        <div class="kpis">
+          <div class="kpi"><div class="label">No fichajes</div><div class="num">16</div><div class="hint">descontando ausencias</div></div>
+          <div class="kpi"><div class="label">Personas</div><div class="num">5</div><div class="hint">con al menos uno</div></div>
+          <div class="kpi"><div class="label">Sin ninguna falta</div><div class="num">10</div><div class="hint">de 15 en alta</div></div>
+          <div class="kpi"><div class="label">Máximo</div><div class="num">6</div><div class="hint">Hugo Peña</div></div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <article class="card">
+          <h2>Veces que no fichó cada persona</h2>
+          <p class="sub">Días laborables sin entrada y sin ausencia aprobada. Ordenado de más a menos.</p>
+          <div class="bars" id="rank-bars"></div>
+          <p class="caption">Eje: número de no fichajes en 30 días. Fuente: datos de ejemplo.</p>
+        </article>
+        <article class="card">
+          <h2>No fichajes por semana</h2>
+          <p class="sub">Suma del equipo. La semana del 20 oct llega hasta el viernes 24; el martes 27 aún no suma.</p>
+          <div class="weeks" id="weeks" role="img" aria-label="No fichajes por semana: 5, 4, 4 y 3"></div>
+          <div class="axis"><span>0</span><span>No fichajes por semana</span><span>5</span></div>
+          <p class="caption">Semanas del 29 sep, 6 oct, 13 oct y 20 oct.</p>
+        </article>
+      </div>
+      <article class="card board">
+        <h2>Detalle por empleado</h2>
+        <p class="sub">La ausencia programada vive en la otra pestaña. Aquí solo cuenta el día en que se esperaba un fichaje y no hubo.</p>
+        <div class="table-scroll" style="margin-top:14px">
+          <table>
+            <thead>
+              <tr>
+                <th>Empleado</th>
+                <th>No fichajes</th>
+                <th>Última vez</th>
+                <th>Ausencias en el periodo</th>
+                <th>Lectura</th>
+              </tr>
+            </thead>
+            <tbody id="hist-rows"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <footer class="note">Borrador visual con nombres y horas inventados. No uses estas cifras como el fichaje real del equipo. La versión conectada leerá Holded a las 9:15 y a las 18:15, hora de Madrid.</footer>
+  </div>
+
+  <script>
+    const TODAY = "2026-10-27";
+    const MONTHS = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+
+    const people = [
+      { id: "lucia", name: "Lucía Navarro", team: "Ventas" },
+      { id: "marcos", name: "Marcos Vidal", team: "Ventas" },
+      { id: "elena", name: "Elena Ruiz", team: "Ventas" },
+      { id: "pablo", name: "Pablo Herrera", team: "Ventas" },
+      { id: "carla", name: "Carla Méndez", team: "Ventas" },
+      { id: "ivan", name: "Iván Romero", team: "Ventas" },
+      { id: "raquel", name: "Raquel Soto", team: "Ventas" },
+      { id: "sofia", name: "Sofía Martín", team: "Operaciones" },
+      { id: "andres", name: "Andrés Costa", team: "Operaciones" },
+      { id: "tomas", name: "Tomás Ibáñez", team: "Operaciones" },
+      { id: "hugo", name: "Hugo Peña", team: "Operaciones" },
+      { id: "diego", name: "Diego Lara", team: "Operaciones" },
+      { id: "nuria", name: "Nuria Blanco", team: "Administración" },
+      { id: "oscar", name: "Óscar Prieto", team: "Administración" },
+      { id: "marta", name: "Marta Gil", team: "Administración" }
+    ];
+
+    const absences = [
+      { person: "raquel", type: "Vacaciones", from: "2026-10-20", to: "2026-10-31", status: "Aprobada" },
+      { person: "diego", type: "Baja médica", from: "2026-10-27", to: "2026-10-27", status: "Aprobada" },
+      { person: "marta", type: "Formación", from: "2026-10-27", to: "2026-10-28", status: "Aprobada" },
+      { person: "elena", type: "Vacaciones", from: "2026-11-03", to: "2026-11-07", status: "Aprobada" },
+      { person: "pablo", type: "Asuntos propios", from: "2026-11-14", to: "2026-11-14", status: "Aprobada" },
+      { person: "sofia", type: "Permiso", from: "2026-10-02", to: "2026-10-02", status: "Aprobada" }
+    ];
+
+    const history = {
+      hugo: { n: 6, last: "2026-10-26" },
+      carla: { n: 4, last: "2026-10-23" },
+      ivan: { n: 3, last: "2026-10-21" },
+      tomas: { n: 2, last: "2026-10-16" },
+      andres: { n: 1, last: "2026-10-09" }
+    };
+
+    const snaps = {
+      "09:15": {
+        lucia: { inn: "08:02", out: null },
+        marcos: { inn: "08:11", out: null },
+        elena: { inn: "08:04", out: null },
+        pablo: { inn: "07:58", out: null },
+        sofia: { inn: "08:27", out: null },
+        andres: { inn: "09:06", out: null },
+        nuria: { inn: "08:15", out: null },
+        oscar: { inn: "08:41", out: null }
+      },
+      "18:15": {
+        lucia: { inn: "08:02", out: null },
+        marcos: { inn: "08:11", out: null },
+        elena: { inn: "08:04", out: "17:55" },
+        pablo: { inn: "07:58", out: "18:01" },
+        sofia: { inn: "08:27", out: "17:48" },
+        andres: { inn: "09:06", out: "18:05" },
+        tomas: { inn: "09:40", out: null },
+        nuria: { inn: "08:15", out: "14:02" },
+        oscar: { inn: "08:41", out: "17:36" }
+      }
+    };
+
+    const weeks = [
+      { label: "29 sep", value: 5 },
+      { label: "6 oct", value: 4 },
+      { label: "13 oct", value: 4 },
+      { label: "20 oct", value: 3 }
+    ];
+
+    const params = new URLSearchParams(location.search);
+const state = {
+  tab: ["fichajes", "ausencias", "historico"].includes(params.get("vista")) ? params.get("vista") : "fichajes",
+  snap: params.get("hora") === "18:15" ? "18:15" : "09:15",
+  filter: ["todos", "fichados", "falta", "cubierta"].includes(params.get("filtro")) ? params.get("filtro") : "todos",
+  selected: people.some((p) => p.id === params.get("persona")) ? params.get("persona") : "hugo"
+};
+
+    function person(id) { return people.find((p) => p.id === id); }
+    function fmt(iso) {
+      const [y, m, d] = iso.split("-").map(Number);
+      return d + " " + MONTHS[m - 1];
+    }
+    function fmtRange(a, b) { return a === b ? fmt(a) : fmt(a) + " – " + fmt(b); }
+    function coversToday(a) { return a.from <= TODAY && TODAY <= a.to; }
+    function absenceToday(id) { return absences.find((a) => a.person === id && coversToday(a)) || null; }
+    function absencesOf(id) { return absences.filter((a) => a.person === id); }
+
+    function classify(id) {
+      const clock = snaps[state.snap][id] || null;
+      const absence = absenceToday(id);
+      if (clock && clock.out) return { kind: "cerrada", clock, absence };
+      if (clock) return { kind: "abierta", clock, absence };
+      if (absence) return { kind: "cubierta", clock: null, absence };
+      return { kind: "falta", clock: null, absence: null };
+    }
+
+    function rowsForFilter() {
+      const rank = { falta: 0, cubierta: 1, abierta: 2, cerrada: 3 };
+      return people
+        .map((p) => ({ p, c: classify(p.id) }))
+        .filter(({ c }) => {
+          if (state.filter === "todos") return true;
+          if (state.filter === "fichados") return c.kind === "abierta" || c.kind === "cerrada";
+          return c.kind === state.filter;
+        })
+        .sort((a, b) => rank[a.c.kind] - rank[b.c.kind] || a.p.name.localeCompare(b.p.name, "es"));
+    }
+
+    function pill(kind) {
+      const map = {
+        falta: "No ha fichado",
+        cubierta: "Ausencia programada",
+        abierta: "En jornada",
+        cerrada: "Jornada cerrada"
+      };
+      return map[kind];
+    }
+
+    function el(tag, cls, text) {
+      const node = document.createElement(tag);
+      if (cls) node.className = cls;
+      if (text != null) node.textContent = text;
+      return node;
+    }
+
+    function renderHero() {
+      const all = people.map((p) => classify(p.id));
+      const fichados = all.filter((c) => c.kind === "abierta" || c.kind === "cerrada").length;
+      const faltas = all.filter((c) => c.kind === "falta").length;
+      const cubiertas = all.filter((c) => c.kind === "cubierta").length;
+      const abiertas = all.filter((c) => c.kind === "abierta").length;
+      const hora = state.snap === "09:15" ? "9:15" : "18:15";
+      const title = document.getElementById("hero-fichajes");
+      title.replaceChildren();
+      const sentence = el("span");
+      sentence.append(
+        document.createTextNode("A las " + hora + ", "),
+        bold(String(fichados) + " de " + people.length),
+        document.createTextNode(" empleados en alta tienen entrada. "),
+        bold(String(faltas)),
+        document.createTextNode(faltas === 1 ? " no tiene fichaje ni ausencia programada. " : " no tienen fichaje ni ausencia programada. "),
+        bold(String(cubiertas)),
+        document.createTextNode(" no fichan porque el calendario ya los cubre.")
+      );
+      title.append(sentence);
+
+      const kpis = [
+        ["En alta", String(people.length), "empleados activos"],
+        ["Han fichado", String(fichados), state.snap === "09:15" ? "ninguna salida todavía" : abiertas + (abiertas === 1 ? " sigue sin salida" : " siguen sin salida")],
+        ["Sin fichar", String(faltas), "no lo explica el calendario"],
+        ["Cubiertos", String(cubiertas), "vacaciones, baja o permiso"]
+      ];
+      const box = document.getElementById("kpis");
+      box.replaceChildren();
+      kpis.forEach(([label, num, hint]) => {
+        const card = el("div", "kpi");
+        card.append(el("div", "label", label), el("div", "num", num), el("div", "hint", hint));
+        box.append(card);
+      });
+
+      const banner = document.getElementById("banner");
+      banner.replaceChildren();
+      if (state.snap === "09:15") {
+        banner.append(
+          bold("Tomás, Hugo, Carla e Iván"),
+          document.createTextNode(" no tienen fichaje ni ausencia a las 9:15. Tomás puede estar en camino: la lectura de las 18:15 dirá si llegó. Hugo, Carla e Iván ya acumulan 6, 4 y 3 no fichajes en 30 días.")
+        );
+      } else {
+        banner.append(
+          bold("Hugo, Carla e Iván"),
+          document.createTextNode(" siguen sin fichaje a las 18:15, y no tienen vacaciones ni permiso. "),
+          bold("Tomás"),
+          document.createTextNode(" fichó a las 09:40, después de la lectura de la mañana, así que hoy no cuenta como falta. Lucía y Marcos siguen con la jornada abierta, sin salida.")
+        );
+      }
+    }
+
+    function bold(text) {
+      const b = document.createElement("b");
+      b.textContent = text;
+      return b;
+    }
+
+    function renderSideLists() {
+      const miss = document.getElementById("miss-list");
+      const cover = document.getElementById("cover-list");
+      miss.replaceChildren();
+      cover.replaceChildren();
+      people.forEach((p) => {
+        const c = classify(p.id);
+        if (c.kind === "falta") {
+          const li = document.createElement("li");
+          const left = el("div");
+          left.append(el("div", "who", p.name), el("div", "meta", p.team + " · " + (history[p.id] ? history[p.id].n + " en 30 días" : "primero en 30 días")));
+          const right = el("div", "count", history[p.id] ? String(history[p.id].n) : "0");
+          const cap = el("span", null, "histórico");
+          right.append(cap);
+          li.append(left, right);
+          miss.append(li);
+        }
+        if (c.kind === "cubierta") {
+          const li = document.createElement("li");
+          const left = el("div");
+          left.append(el("div", "who", p.name), el("div", "meta", c.absence.type + " · " + fmtRange(c.absence.from, c.absence.to)));
+          li.append(left, el("div", "pill cubierta", "Cubierto"));
+          cover.append(li);
+        }
+      });
+    }
+
+    function renderTable() {
+      const body = document.getElementById("rows");
+      body.replaceChildren();
+      const list = rowsForFilter();
+      if (!list.some((r) => r.p.id === state.selected) && list[0]) state.selected = list[0].p.id;
+      list.forEach(({ p, c }) => {
+        const tr = document.createElement("tr");
+        tr.className = c.kind;
+        tr.dataset.id = p.id;
+        tr.setAttribute("aria-selected", p.id === state.selected ? "true" : "false");
+        const who = el("td");
+        who.append(el("div", "name", p.name), el("div", "team", p.team));
+        const entrada = el("td", "time" + (c.clock ? "" : " none"), c.clock ? c.clock.inn : "—");
+        const salida = el("td", "time" + (c.clock && c.clock.out ? "" : " none"), c.clock && c.clock.out ? c.clock.out : "—");
+        const estado = el("td");
+        estado.append(el("span", "pill " + c.kind, pill(c.kind)));
+        let cal = "Entrada registrada";
+        if (c.kind === "falta") cal = "Sin vacaciones ni permiso hoy";
+        if (c.kind === "cubierta") cal = c.absence.type + " · " + fmtRange(c.absence.from, c.absence.to);
+        if (c.kind === "abierta") cal = "Sin salida todavía";
+        const calendario = el("td", "cruce", cal);
+        tr.append(who, entrada, salida, estado, calendario);
+        tr.addEventListener("click", () => {
+          state.selected = p.id;
+          renderTable();
+          renderDetail();
+        });
+        body.append(tr);
+      });
+    }
+
+    function renderDetail() {
+      const p = person(state.selected);
+      const c = classify(p.id);
+      const box = document.getElementById("detail");
+      box.replaceChildren();
+      box.append(el("div", "kicker", "Lectura de las " + (state.snap === "09:15" ? "9:15" : "18:15")));
+      box.append(el("h3", null, p.name));
+      const facts = document.createElement("dl");
+      facts.className = "facts";
+      [["Entrada", c.clock ? c.clock.inn : "—"], ["Salida", c.clock && c.clock.out ? c.clock.out : "—"], ["Equipo", p.team], ["En 30 días", (history[p.id] ? history[p.id].n : 0) + " no fichajes"]].forEach(([k, v]) => {
+        const wrap = document.createElement("div");
+        wrap.append(el("dt", null, k), el("dd", null, v));
+        facts.append(wrap);
+      });
+      box.append(facts);
+      const verdict = el("div", "verdict");
+      if (c.kind === "falta") {
+        verdict.textContent = state.snap === "09:15" && p.id === "tomas"
+          ? "No ha fichado y no tiene ausencia. Aún puede llegar: si aparece en la lectura de las 18:15, hoy no sumará al histórico."
+          : "No ha fichado y el calendario no tiene vacaciones, baja ni permiso hoy. Cuenta como no fichaje.";
+      } else if (c.kind === "cubierta") {
+        verdict.textContent = c.absence.type + " aprobada (" + fmtRange(c.absence.from, c.absence.to) + "). Hoy no se espera fichaje y no suma como falta.";
+      } else if (c.kind === "abierta") {
+        if (p.id === "tomas") {
+          verdict.textContent = "Fichó a las 09:40, después de la lectura de la mañana. Hoy no es una falta. Sigue sin salida.";
+        } else if (state.snap === "18:15") {
+          verdict.textContent = "Hay entrada y, en la lectura de las 18:15, sigue sin fichar la salida.";
+        } else {
+          verdict.textContent = "Hay entrada y la jornada sigue abierta. La salida se verá en la lectura de las 18:15.";
+        }
+      } else {
+        verdict.textContent = "Jornada cerrada: entrada a las " + c.clock.inn + " y salida a las " + c.clock.out + ".";
+      }
+      box.append(verdict);
+      const hist = history[p.id];
+      const extra = el("p");
+      extra.textContent = hist
+        ? "Histórico cerrado hasta el 26 oct: " + hist.n + " no fichajes. El último fue el " + fmt(hist.last) + "."
+        : "En los 30 días cerrados no tiene ningún no fichaje.";
+      box.append(extra);
+    }
+
+    function renderAusencias() {
+      const today = absences.filter(coversToday);
+      const other = absences.filter((a) => !coversToday(a));
+      const kpis = document.getElementById("kpis-aus");
+      kpis.replaceChildren();
+      [["Hoy", String(today.length), "ausencias que cubren el fichaje"], ["En calendario", String(absences.length), "aprobadas, incluidas las futuras"], ["Vacaciones", String(absences.filter((a) => a.type === "Vacaciones").length), "periodos de vacaciones"], ["No afectan hoy", String(other.length), "pasadas o todavía por llegar"]].forEach(([label, num, hint]) => {
+        const card = el("div", "kpi");
+        card.append(el("div", "label", label), el("div", "num", num), el("div", "hint", hint));
+        kpis.append(card);
+      });
+      fillAbsList(document.getElementById("today-abs"), today, true);
+      fillAbsList(document.getElementById("other-abs"), other, false);
+      const body = document.getElementById("abs-rows");
+      body.replaceChildren();
+      absences.forEach((a) => {
+        const p = person(a.person);
+        const tr = document.createElement("tr");
+        const who = el("td");
+        who.append(el("div", "name", p.name), el("div", "team", p.team));
+        const efecto = coversToday(a) ? "Hoy no se espera fichaje" : "No cambia el tablero de hoy";
+        tr.append(who, el("td", null, a.type), el("td", null, fmtRange(a.from, a.to)), el("td", null, a.status), el("td", "cruce", efecto));
+        body.append(tr);
+      });
+    }
+
+    function fillAbsList(node, list, today) {
+      node.replaceChildren();
+      list.forEach((a) => {
+        const p = person(a.person);
+        const li = document.createElement("li");
+        const left = el("div");
+        left.append(el("div", "who", p.name), el("div", "meta", a.type + " · " + fmtRange(a.from, a.to)));
+        li.append(left, el("div", "pill " + (today ? "cubierta" : "abierta"), today ? "Cubre hoy" : "Otro día"));
+        node.append(li);
+      });
+    }
+
+    function renderHistorico() {
+      const ranked = people
+        .map((p) => ({ p, n: history[p.id] ? history[p.id].n : 0 }))
+        .filter((r) => r.n > 0)
+        .sort((a, b) => b.n - a.n);
+      const bars = document.getElementById("rank-bars");
+      bars.replaceChildren();
+      ranked.forEach(({ p, n }) => {
+        const row = el("div", "bar-row");
+        const track = el("div", "track");
+        const fill = el("div", "fill");
+        fill.style.width = (n / 6) * 100 + "%";
+        track.append(fill);
+        row.append(el("div", "nm", p.name), track, el("div", "n", String(n)));
+        bars.append(row);
+      });
+      const weekBox = document.getElementById("weeks");
+      weekBox.replaceChildren();
+      weeks.forEach((w) => {
+        const colWrap = el("div", "week");
+        const col = el("div", "col");
+        col.style.height = (w.value / 5) * 100 + "%";
+        col.title = w.label + ": " + w.value + " no fichajes";
+        colWrap.append(col, el("span", null, w.label));
+        weekBox.append(colWrap);
+      });
+      const body = document.getElementById("hist-rows");
+      body.replaceChildren();
+      people
+        .slice()
+        .sort((a, b) => (history[b.id]?.n || 0) - (history[a.id]?.n || 0) || a.name.localeCompare(b.name, "es"))
+        .forEach((p) => {
+          const h = history[p.id];
+          const abs = absencesOf(p.id);
+          const tr = document.createElement("tr");
+          const who = el("td");
+          who.append(el("div", "name", p.name), el("div", "team", p.team));
+          const lectura = h ? "Repite: revisar con la persona" : "Sin no fichajes en el periodo";
+          tr.append(
+            who,
+            el("td", "time", String(h ? h.n : 0)),
+            el("td", null, h ? fmt(h.last) : "—"),
+            el("td", "cruce", abs.length ? abs.map((a) => a.type + " " + fmtRange(a.from, a.to)).join(" · ") : "Ninguna"),
+            el("td", "cruce", lectura)
+          );
+          body.append(tr);
+        });
+    }
+
+    function renderFilters() {
+      document.querySelectorAll("[data-filter]").forEach((btn) => {
+        btn.setAttribute("aria-pressed", btn.dataset.filter === state.filter ? "true" : "false");
+      });
+      document.querySelectorAll("[data-snap]").forEach((btn) => {
+        btn.setAttribute("aria-pressed", btn.dataset.snap === state.snap ? "true" : "false");
+      });
+      document.querySelectorAll("[data-tab]").forEach((btn) => {
+        const on = btn.dataset.tab === state.tab;
+        btn.setAttribute("aria-selected", on ? "true" : "false");
+        document.getElementById("panel-" + btn.dataset.tab).hidden = !on;
+      });
+    }
+
+    function render() {
+      renderFilters();
+      renderHero();
+      renderSideLists();
+      renderTable();
+      renderDetail();
+      renderAusencias();
+      renderHistorico();
+    }
+
+    document.querySelectorAll("[data-snap]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.snap = btn.dataset.snap;
+        state.tab = "fichajes";
+        render();
+      });
+    });
+    document.querySelectorAll("[data-tab]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.tab = btn.dataset.tab;
+        render();
+      });
+    });
+    document.querySelectorAll("[data-filter]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.filter = btn.dataset.filter;
+        render();
+      });
+    });
+
+    render();
+  </script>
+</body>
+</html>
