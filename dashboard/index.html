@@ -431,12 +431,9 @@
         </svg>
         <div class="word">Salesdose</div>
         <div class="div"></div>
-        <div class="product">Control horario · <strong>borrador</strong></div>
+        <div class="product">Control horario · <strong id="product-label">borrador</strong></div>
       </div>
-      <div class="seg" role="group" aria-label="Hora de la lectura">
-        <button type="button" data-snap="09:15" aria-pressed="true">Lectura 9:15</button>
-        <button type="button" data-snap="18:15" aria-pressed="false">Lectura 18:15</button>
-      </div>
+      <div class="seg" id="snap-switch" role="group" aria-label="Hora de la lectura"></div>
     </header>
 
     <nav class="tabs" aria-label="Vistas del tablero">
@@ -447,7 +444,7 @@
 
     <section id="panel-fichajes">
       <div class="hero">
-        <p class="eyebrow">Salesdose · Control horario · Martes 27 oct 2026 · hora de Madrid</p>
+        <p class="eyebrow" id="eyebrow-fichajes">Salesdose · Control horario · Martes 27 oct 2026 · hora de Madrid</p>
         <h1 id="hero-fichajes"></h1>
         <div class="kpis" id="kpis"></div>
       </div>
@@ -494,7 +491,7 @@
           </div>
           <aside class="detail" id="detail" aria-live="polite"></aside>
         </div>
-        <p class="caption">Solo personal en alta. Quien ya está de baja en Holded no aparece. Fuente de este borrador: datos de ejemplo, no los fichajes reales.</p>
+        <p class="caption" id="caption-fichajes">Solo personal en alta. Quien ya está de baja en Holded no aparece. Fuente de este borrador: datos de ejemplo, no los fichajes reales.</p>
       </article>
     </section>
 
@@ -539,28 +536,23 @@
 
     <section id="panel-historico" hidden>
       <div class="hero">
-        <p class="eyebrow">Histórico · 29 sep – 26 oct 2026 · días laborables</p>
-        <h1>16 no fichajes en 30 días, en 5 personas. El día de hoy todavía no entra en la cuenta: se cierra con la lectura de las 18:15.</h1>
-        <div class="kpis">
-          <div class="kpi"><div class="label">No fichajes</div><div class="num">16</div><div class="hint">descontando ausencias</div></div>
-          <div class="kpi"><div class="label">Personas</div><div class="num">5</div><div class="hint">con al menos uno</div></div>
-          <div class="kpi"><div class="label">Sin ninguna falta</div><div class="num">10</div><div class="hint">de 15 en alta</div></div>
-          <div class="kpi"><div class="label">Máximo</div><div class="num">6</div><div class="hint">Hugo Peña</div></div>
-        </div>
+        <p class="eyebrow" id="eyebrow-hist">Histórico</p>
+        <h1 id="hero-hist"></h1>
+        <div class="kpis" id="kpis-hist"></div>
       </div>
       <div class="grid-2">
         <article class="card">
           <h2>Veces que no fichó cada persona</h2>
           <p class="sub">Días laborables sin entrada y sin ausencia aprobada. Ordenado de más a menos.</p>
           <div class="bars" id="rank-bars"></div>
-          <p class="caption">Eje: número de no fichajes en 30 días. Fuente: datos de ejemplo.</p>
+          <p class="caption" id="caption-hist">Eje: número de no fichajes en días laborables.</p>
         </article>
         <article class="card">
           <h2>No fichajes por semana</h2>
           <p class="sub">Suma del equipo. La semana del 20 oct llega hasta el viernes 24; el martes 27 aún no suma.</p>
-          <div class="weeks" id="weeks" role="img" aria-label="No fichajes por semana: 5, 4, 4 y 3"></div>
-          <div class="axis"><span>0</span><span>No fichajes por semana</span><span>5</span></div>
-          <p class="caption">Semanas del 29 sep, 6 oct, 13 oct y 20 oct.</p>
+          <div class="weeks" id="weeks" role="img" aria-label="No fichajes por semana"></div>
+          <div class="axis"><span>0</span><span>No fichajes por semana</span><span id="week-max">0</span></div>
+          <p class="caption" id="caption-weeks"></p>
         </article>
       </div>
       <article class="card board">
@@ -583,12 +575,28 @@
       </article>
     </section>
 
-    <footer class="note">Borrador visual con nombres y horas inventados. No uses estas cifras como el fichaje real del equipo. La versión conectada leerá Holded a las 9:15 y a las 18:15, hora de Madrid.</footer>
+    <footer class="note" id="footer-note">Borrador visual con nombres y horas inventados. No uses estas cifras como el fichaje real del equipo. La versión conectada leerá Holded a las 9:15 y a las 18:15, hora de Madrid.</footer>
   </div>
 
   <script>
-    const TODAY = "2026-10-27";
     const MONTHS = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+    /* DATA:START */
+    const TODAY = "2026-10-27";
+    const meta = {
+      product: "borrador",
+      eyebrow: "Salesdose · Control horario · Martes 27 oct 2026 · hora de Madrid",
+      eyebrowHist: "Histórico · 29 sep – 26 oct 2026 · días laborables",
+      caption: "Solo personal en alta. Quien ya está de baja en Holded no aparece. Fuente de este borrador: datos de ejemplo, no los fichajes reales.",
+      footer: "Borrador visual con nombres y horas inventados. No uses estas cifras como el fichaje real del equipo. La versión conectada leerá Holded a las 9:15 y a las 18:15, hora de Madrid.",
+      histCaption: "Eje: número de no fichajes en días laborables. Fuente: datos de ejemplo.",
+      historyFrom: "2026-09-29",
+      historyTo: "2026-10-26",
+      historyEndLabel: "26 oct"
+    };
+    const readings = [
+      { id: "09:15", button: "Lectura 9:15", hora: "9:15" },
+      { id: "18:15", button: "Lectura 18:15", hora: "18:15" }
+    ];
 
     const people = [
       { id: "lucia", name: "Lucía Navarro", team: "Ventas" },
@@ -655,14 +663,23 @@
       { label: "13 oct", value: 4 },
       { label: "20 oct", value: 3 }
     ];
+    /* DATA:END */
 
     const params = new URLSearchParams(location.search);
-const state = {
-  tab: ["fichajes", "ausencias", "historico"].includes(params.get("vista")) ? params.get("vista") : "fichajes",
-  snap: params.get("hora") === "18:15" ? "18:15" : "09:15",
-  filter: ["todos", "fichados", "falta", "cubierta"].includes(params.get("filtro")) ? params.get("filtro") : "todos",
-  selected: people.some((p) => p.id === params.get("persona")) ? params.get("persona") : "hugo"
-};
+    const snapIds = readings.map((r) => r.id);
+    const state = {
+      tab: ["fichajes", "ausencias", "historico"].includes(params.get("vista")) ? params.get("vista") : "fichajes",
+      snap: snapIds.includes(params.get("hora")) ? params.get("hora") : snapIds[0],
+      filter: ["todos", "fichados", "falta", "cubierta"].includes(params.get("filtro")) ? params.get("filtro") : "todos",
+      selected: people.some((p) => p.id === params.get("persona")) ? params.get("persona") : ""
+    };
+
+    function reading() { return readings.find((r) => r.id === state.snap) || readings[0]; }
+    function joinNames(list) {
+      const names = list.map((p) => p.name);
+      if (names.length <= 1) return names[0] || "";
+      return names.slice(0, -1).join(", ") + " y " + names[names.length - 1];
+    }
 
     function person(id) { return people.find((p) => p.id === id); }
     function fmt(iso) {
@@ -670,8 +687,12 @@ const state = {
       return d + " " + MONTHS[m - 1];
     }
     function fmtRange(a, b) { return a === b ? fmt(a) : fmt(a) + " – " + fmt(b); }
-    function coversToday(a) { return a.from <= TODAY && TODAY <= a.to; }
+    function onToday(a) { return a.from <= TODAY && TODAY <= a.to; }
+    function coversToday(a) { return a.covers !== false && onToday(a); }
     function absenceToday(id) { return absences.find((a) => a.person === id && coversToday(a)) || null; }
+    function pendingToday(id) {
+      return absences.find((a) => a.person === id && a.covers === false && a.status === "Pendiente" && onToday(a)) || null;
+    }
     function absencesOf(id) { return absences.filter((a) => a.person === id); }
 
     function classify(id) {
@@ -718,7 +739,7 @@ const state = {
       const faltas = all.filter((c) => c.kind === "falta").length;
       const cubiertas = all.filter((c) => c.kind === "cubierta").length;
       const abiertas = all.filter((c) => c.kind === "abierta").length;
-      const hora = state.snap === "09:15" ? "9:15" : "18:15";
+      const hora = reading().hora;
       const title = document.getElementById("hero-fichajes");
       title.replaceChildren();
       const sentence = el("span");
@@ -727,15 +748,21 @@ const state = {
         bold(String(fichados) + " de " + people.length),
         document.createTextNode(" empleados en alta tienen entrada. "),
         bold(String(faltas)),
-        document.createTextNode(faltas === 1 ? " no tiene fichaje ni ausencia programada. " : " no tienen fichaje ni ausencia programada. "),
-        bold(String(cubiertas)),
-        document.createTextNode(" no fichan porque el calendario ya los cubre.")
+        document.createTextNode(faltas === 1 ? " no tiene fichaje ni ausencia programada. " : " no tienen fichaje ni ausencia programada. ")
       );
+      if (cubiertas === 0) {
+        sentence.append(document.createTextNode("El calendario no cubre a nadie hoy."));
+      } else {
+        sentence.append(
+          bold(String(cubiertas)),
+          document.createTextNode(cubiertas === 1 ? " no ficha porque el calendario ya la cubre." : " no fichan porque el calendario ya las cubre.")
+        );
+      }
       title.append(sentence);
 
       const kpis = [
         ["En alta", String(people.length), "empleados activos"],
-        ["Han fichado", String(fichados), state.snap === "09:15" ? "ninguna salida todavía" : abiertas + (abiertas === 1 ? " sigue sin salida" : " siguen sin salida")],
+        ["Han fichado", String(fichados), fichados === 0 ? "sin entradas" : abiertas === 0 ? "todas con salida" : abiertas === fichados ? "ninguna salida todavía" : abiertas + (abiertas === 1 ? " sigue sin salida" : " siguen sin salida")],
         ["Sin fichar", String(faltas), "no lo explica el calendario"],
         ["Cubiertos", String(cubiertas), "vacaciones, baja o permiso"]
       ];
@@ -749,18 +776,24 @@ const state = {
 
       const banner = document.getElementById("banner");
       banner.replaceChildren();
-      if (state.snap === "09:15") {
-        banner.append(
-          bold("Tomás, Hugo, Carla e Iván"),
-          document.createTextNode(" no tienen fichaje ni ausencia a las 9:15. Tomás puede estar en camino: la lectura de las 18:15 dirá si llegó. Hugo, Carla e Iván ya acumulan 6, 4 y 3 no fichajes en 30 días.")
-        );
+      const misses = people.filter((p) => classify(p.id).kind === "falta");
+      if (!misses.length) {
+        banner.append(document.createTextNode("En esta lectura, todo el personal en alta ha fichado o tiene una ausencia que lo cubre."));
       } else {
         banner.append(
-          bold("Hugo, Carla e Iván"),
-          document.createTextNode(" siguen sin fichaje a las 18:15, y no tienen vacaciones ni permiso. "),
-          bold("Tomás"),
-          document.createTextNode(" fichó a las 09:40, después de la lectura de la mañana, así que hoy no cuenta como falta. Lucía y Marcos siguen con la jornada abierta, sin salida.")
+          bold(joinNames(misses)),
+          document.createTextNode(misses.length === 1 ? " no tiene fichaje ni ausencia en esta lectura." : " no tienen fichaje ni ausencia en esta lectura.")
         );
+      }
+      if (state.snap !== readings[0].id) {
+        const late = people.filter((p) => !snaps[readings[0].id][p.id] && snaps[state.snap][p.id]);
+        if (late.length) {
+          banner.append(document.createTextNode(" Después de las " + readings[0].hora + " han fichado " + late.map((p) => p.name + " (" + snaps[state.snap][p.id].inn + ")").join(", ") + "."));
+        }
+      }
+      const open = people.filter((p) => classify(p.id).kind === "abierta");
+      if (open.length && state.snap !== readings[0].id) {
+        banner.append(document.createTextNode(" Siguen sin salida " + open.length + (open.length === 1 ? " persona." : " personas.")));
       }
     }
 
@@ -773,14 +806,19 @@ const state = {
     function renderSideLists() {
       const miss = document.getElementById("miss-list");
       const cover = document.getElementById("cover-list");
-      miss.replaceChildren();
-      cover.replaceChildren();
+        miss.replaceChildren();
+        cover.replaceChildren();
+        const missPeople = people.filter((p) => classify(p.id).kind === "falta");
+        const coverPeople = people.filter((p) => classify(p.id).kind === "cubierta");
+        if (!missPeople.length) miss.append(el("li", null, "Nadie sin fichaje en esta lectura."));
+        if (!coverPeople.length) cover.append(el("li", null, "Nadie tiene una ausencia que cubra esta lectura."));
       people.forEach((p) => {
         const c = classify(p.id);
         if (c.kind === "falta") {
           const li = document.createElement("li");
           const left = el("div");
-          left.append(el("div", "who", p.name), el("div", "meta", p.team + " · " + (history[p.id] ? history[p.id].n + " en 30 días" : "primero en 30 días")));
+          const histBit = history[p.id] ? history[p.id].n + " en el periodo" : "ninguno en el periodo";
+          left.append(el("div", "who", p.name), el("div", "meta", p.team ? p.team + " · " + histBit : histBit));
           const right = el("div", "count", history[p.id] ? String(history[p.id].n) : "0");
           const cap = el("span", null, "histórico");
           right.append(cap);
@@ -808,7 +846,8 @@ const state = {
         tr.dataset.id = p.id;
         tr.setAttribute("aria-selected", p.id === state.selected ? "true" : "false");
         const who = el("td");
-        who.append(el("div", "name", p.name), el("div", "team", p.team));
+        who.append(el("div", "name", p.name));
+        if (p.team) who.append(el("div", "team", p.team));
         const entrada = el("td", "time" + (c.clock ? "" : " none"), c.clock ? c.clock.inn : "—");
         const salida = el("td", "time" + (c.clock && c.clock.out ? "" : " none"), c.clock && c.clock.out ? c.clock.out : "—");
         const estado = el("td");
@@ -833,30 +872,41 @@ const state = {
       const c = classify(p.id);
       const box = document.getElementById("detail");
       box.replaceChildren();
-      box.append(el("div", "kicker", "Lectura de las " + (state.snap === "09:15" ? "9:15" : "18:15")));
+      box.append(el("div", "kicker", "Lectura de las " + reading().hora));
       box.append(el("h3", null, p.name));
       const facts = document.createElement("dl");
       facts.className = "facts";
-      [["Entrada", c.clock ? c.clock.inn : "—"], ["Salida", c.clock && c.clock.out ? c.clock.out : "—"], ["Equipo", p.team], ["En 30 días", (history[p.id] ? history[p.id].n : 0) + " no fichajes"]].forEach(([k, v]) => {
+      const factRows = [["Entrada", c.clock ? c.clock.inn : "—"], ["Salida", c.clock && c.clock.out ? c.clock.out : "—"]];
+      if (p.team) factRows.push(["Equipo", p.team]);
+      factRows.push(["En el periodo", (history[p.id] ? history[p.id].n : 0) + " no fichajes"]);
+      factRows.forEach(([k, v]) => {
         const wrap = document.createElement("div");
         wrap.append(el("dt", null, k), el("dd", null, v));
         facts.append(wrap);
       });
       box.append(facts);
       const verdict = el("div", "verdict");
+      const later = readings[1];
+      const morningClock = snaps[readings[0].id][p.id];
+      const laterClock = snaps[later.id][p.id];
+      const pending = pendingToday(p.id);
       if (c.kind === "falta") {
-        verdict.textContent = state.snap === "09:15" && p.id === "tomas"
-          ? "No ha fichado y no tiene ausencia. Aún puede llegar: si aparece en la lectura de las 18:15, hoy no sumará al histórico."
-          : "No ha fichado y el calendario no tiene vacaciones, baja ni permiso hoy. Cuenta como no fichaje.";
-      } else if (c.kind === "cubierta") {
-        verdict.textContent = c.absence.type + " aprobada (" + fmtRange(c.absence.from, c.absence.to) + "). Hoy no se espera fichaje y no suma como falta.";
-      } else if (c.kind === "abierta") {
-        if (p.id === "tomas") {
-          verdict.textContent = "Fichó a las 09:40, después de la lectura de la mañana. Hoy no es una falta. Sigue sin salida.";
-        } else if (state.snap === "18:15") {
-          verdict.textContent = "Hay entrada y, en la lectura de las 18:15, sigue sin fichar la salida.";
+        if (state.snap === readings[0].id && !morningClock && laterClock) {
+          verdict.textContent = "A las " + readings[0].hora + " aún no había fichado. En la lectura de las " + later.hora + " ya consta la entrada a las " + laterClock.inn + ".";
+        } else if (pending) {
+          verdict.textContent = "No ha fichado. Hay una solicitud pendiente (" + pending.type + ") que todavía no cubre el día, así que cuenta como no fichaje.";
         } else {
-          verdict.textContent = "Hay entrada y la jornada sigue abierta. La salida se verá en la lectura de las 18:15.";
+          verdict.textContent = "No ha fichado y el calendario no tiene vacaciones, baja ni permiso que cubra hoy. Cuenta como no fichaje.";
+        }
+      } else if (c.kind === "cubierta") {
+        verdict.textContent = c.absence.type + " (" + fmtRange(c.absence.from, c.absence.to) + "). Hoy no se espera fichaje y no suma como falta.";
+      } else if (c.kind === "abierta") {
+        if (!morningClock && laterClock && state.snap === later.id) {
+          verdict.textContent = "Fichó a las " + c.clock.inn + ", después de la lectura de las " + readings[0].hora + ". Hoy no es una falta. Sigue sin salida.";
+        } else if (state.snap !== readings[0].id) {
+          verdict.textContent = "Hay entrada y, en la lectura de las " + reading().hora + ", sigue sin fichar la salida.";
+        } else {
+          verdict.textContent = "Hay entrada y la jornada sigue abierta. La salida se verá en la lectura de las " + later.hora + ".";
         }
       } else {
         verdict.textContent = "Jornada cerrada: entrada a las " + c.clock.inn + " y salida a las " + c.clock.out + ".";
@@ -865,8 +915,8 @@ const state = {
       const hist = history[p.id];
       const extra = el("p");
       extra.textContent = hist
-        ? "Histórico cerrado hasta el 26 oct: " + hist.n + " no fichajes. El último fue el " + fmt(hist.last) + "."
-        : "En los 30 días cerrados no tiene ningún no fichaje.";
+        ? "Histórico cerrado hasta el " + meta.historyEndLabel + ": " + hist.n + " no fichajes. El último fue el " + fmt(hist.last) + "."
+        : "En los días laborables cerrados hasta el " + meta.historyEndLabel + " no tiene ningún no fichaje.";
       box.append(extra);
     }
 
@@ -875,7 +925,7 @@ const state = {
       const other = absences.filter((a) => !coversToday(a));
       const kpis = document.getElementById("kpis-aus");
       kpis.replaceChildren();
-      [["Hoy", String(today.length), "ausencias que cubren el fichaje"], ["En calendario", String(absences.length), "aprobadas, incluidas las futuras"], ["Vacaciones", String(absences.filter((a) => a.type === "Vacaciones").length), "periodos de vacaciones"], ["No afectan hoy", String(other.length), "pasadas o todavía por llegar"]].forEach(([label, num, hint]) => {
+      [["Hoy", String(today.length), "ausencias que cubren el fichaje"], ["En calendario", String(absences.length), "aprobadas, incluidas las futuras"], ["Vacaciones", String(absences.filter((a) => a.type.indexOf("Vacaciones") === 0).length), "periodos de vacaciones"], ["No afectan hoy", String(other.length), "pasadas o todavía por llegar"]].forEach(([label, num, hint]) => {
         const card = el("div", "kpi");
         card.append(el("div", "label", label), el("div", "num", num), el("div", "hint", hint));
         kpis.append(card);
@@ -888,8 +938,11 @@ const state = {
         const p = person(a.person);
         const tr = document.createElement("tr");
         const who = el("td");
-        who.append(el("div", "name", p.name), el("div", "team", p.team));
-        const efecto = coversToday(a) ? "Hoy no se espera fichaje" : "No cambia el tablero de hoy";
+        who.append(el("div", "name", p.name));
+        if (p.team) who.append(el("div", "team", p.team));
+        let efecto = "No cambia el tablero de hoy";
+        if (onToday(a) && a.covers === false) efecto = "Pendiente: todavía no cubre el fichaje";
+        else if (coversToday(a)) efecto = "Hoy no se espera fichaje";
         tr.append(who, el("td", null, a.type), el("td", null, fmtRange(a.from, a.to)), el("td", null, a.status), el("td", "cruce", efecto));
         body.append(tr);
       });
@@ -901,7 +954,7 @@ const state = {
         const p = person(a.person);
         const li = document.createElement("li");
         const left = el("div");
-        left.append(el("div", "who", p.name), el("div", "meta", a.type + " · " + fmtRange(a.from, a.to)));
+        left.append(el("div", "who", p.name), el("div", "meta", (p.team ? p.team + " · " : "") + a.type + " · " + fmtRange(a.from, a.to)));
         li.append(left, el("div", "pill " + (today ? "cubierta" : "abierta"), today ? "Cubre hoy" : "Otro día"));
         node.append(li);
       });
@@ -912,23 +965,47 @@ const state = {
         .map((p) => ({ p, n: history[p.id] ? history[p.id].n : 0 }))
         .filter((r) => r.n > 0)
         .sort((a, b) => b.n - a.n);
+      const total = ranked.reduce((sum, r) => sum + r.n, 0);
+      const clean = people.length - ranked.length;
+      const top = ranked[0];
+      const hero = document.getElementById("hero-hist");
+      hero.replaceChildren();
+      hero.append(
+        bold(String(total)),
+        document.createTextNode(" no fichajes en el periodo, en "),
+        bold(String(ranked.length)),
+        document.createTextNode(ranked.length === 1 ? " persona. " : " personas. "),
+        document.createTextNode("El día de hoy no entra: el histórico cierra el " + meta.historyEndLabel + ".")
+      );
+      const kpis = document.getElementById("kpis-hist");
+      kpis.replaceChildren();
+      [["No fichajes", String(total), "descontando ausencias"], ["Personas", String(ranked.length), "con al menos uno"], ["Sin ninguna falta", String(clean), "de " + people.length + " en alta"], ["Máximo", top ? String(top.n) : "0", top ? top.p.name : "—"]].forEach(([label, num, hint]) => {
+        const card = el("div", "kpi");
+        card.append(el("div", "label", label), el("div", "num", num), el("div", "hint", hint));
+        kpis.append(card);
+      });
+      const maxN = Math.max(1, ...ranked.map((r) => r.n));
       const bars = document.getElementById("rank-bars");
       bars.replaceChildren();
       ranked.forEach(({ p, n }) => {
         const row = el("div", "bar-row");
         const track = el("div", "track");
         const fill = el("div", "fill");
-        fill.style.width = (n / 6) * 100 + "%";
+        fill.style.width = (n / maxN) * 100 + "%";
         track.append(fill);
         row.append(el("div", "nm", p.name), track, el("div", "n", String(n)));
         bars.append(row);
       });
+      const maxWeek = Math.max(1, ...weeks.map((w) => w.value));
+      document.getElementById("week-max").textContent = String(maxWeek);
+      document.getElementById("caption-weeks").textContent = "Semanas del " + weeks.map((w) => w.label).join(", ") + ".";
       const weekBox = document.getElementById("weeks");
+      weekBox.style.gridTemplateColumns = "repeat(" + weeks.length + ", 1fr)";
       weekBox.replaceChildren();
       weeks.forEach((w) => {
         const colWrap = el("div", "week");
         const col = el("div", "col");
-        col.style.height = (w.value / 5) * 100 + "%";
+        col.style.height = (w.value / maxWeek) * 100 + "%";
         col.title = w.label + ": " + w.value + " no fichajes";
         colWrap.append(col, el("span", null, w.label));
         weekBox.append(colWrap);
@@ -943,13 +1020,16 @@ const state = {
           const abs = absencesOf(p.id);
           const tr = document.createElement("tr");
           const who = el("td");
-          who.append(el("div", "name", p.name), el("div", "team", p.team));
+          who.append(el("div", "name", p.name));
+          if (p.team) who.append(el("div", "team", p.team));
+          const inPeriod = abs.filter((a) => a.covers !== false && a.to >= meta.historyFrom && a.from <= meta.historyTo);
+          const absText = !inPeriod.length ? "Ninguna" : inPeriod.length > 3 ? inPeriod.length + " en el periodo" : inPeriod.map((a) => a.type + " " + fmtRange(a.from, a.to)).join(" · ");
           const lectura = h ? "Repite: revisar con la persona" : "Sin no fichajes en el periodo";
           tr.append(
             who,
             el("td", "time", String(h ? h.n : 0)),
             el("td", null, h ? fmt(h.last) : "—"),
-            el("td", "cruce", abs.length ? abs.map((a) => a.type + " " + fmtRange(a.from, a.to)).join(" · ") : "Ninguna"),
+            el("td", "cruce", absText),
             el("td", "cruce", lectura)
           );
           body.append(tr);
@@ -970,7 +1050,17 @@ const state = {
       });
     }
 
+    function bindCopy() {
+      document.getElementById("product-label").textContent = meta.product;
+      document.getElementById("eyebrow-fichajes").textContent = meta.eyebrow;
+      document.getElementById("eyebrow-hist").textContent = meta.eyebrowHist;
+      document.getElementById("caption-fichajes").textContent = meta.caption;
+      document.getElementById("caption-hist").textContent = meta.histCaption;
+      document.getElementById("footer-note").textContent = meta.footer;
+    }
+
     function render() {
+      bindCopy();
       renderFilters();
       renderHero();
       renderSideLists();
@@ -980,12 +1070,20 @@ const state = {
       renderHistorico();
     }
 
-    document.querySelectorAll("[data-snap]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        state.snap = btn.dataset.snap;
-        state.tab = "fichajes";
-        render();
-      });
+    const snapSwitch = document.getElementById("snap-switch");
+    readings.forEach((item) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.dataset.snap = item.id;
+      btn.textContent = item.button;
+      snapSwitch.append(btn);
+    });
+    snapSwitch.addEventListener("click", (event) => {
+      const btn = event.target.closest("[data-snap]");
+      if (!btn) return;
+      state.snap = btn.dataset.snap;
+      state.tab = "fichajes";
+      render();
     });
     document.querySelectorAll("[data-tab]").forEach((btn) => {
       btn.addEventListener("click", () => {
